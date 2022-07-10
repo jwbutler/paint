@@ -1,5 +1,6 @@
+import Canvas from '../components/Canvas';
 import { Colors, rgb2css } from './colors';
-import type { Coordinates } from './types';
+import type { Coordinates } from './geometry';
 import type { RGB } from './colors';
 // TODO write a .d.ts for this
 // @ts-ignore
@@ -61,6 +62,21 @@ const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
     };
     drawPoint({ canvas, coordinates, rgb });
   }
+};
+
+const drawBox = ({ canvas, start, end, rgb }: LineProps) => {
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.fillStyle = rgb2css(rgb);
+  drawLine({ canvas, start: { x: start.x, y: start.y }, end: { x: end.x, y: start.y }, rgb });
+  drawLine({ canvas, start: { x: end.x, y: start.y }, end: { x: end.x, y: end.y }, rgb });
+  drawLine({ canvas, start: { x: end.x, y: end.y }, end: { x: start.x, y: end.y }, rgb });
+  drawLine({ canvas, start: { x: start.x, y: end.y }, end: { x: start.x, y: start.y }, rgb });
+};
+
+const drawRect = ({ canvas, start, end, rgb }: LineProps) => {
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.fillStyle = rgb2css(rgb);
+  context.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
 };
 
 /**
@@ -153,6 +169,8 @@ const loadImage = async (canvas: HTMLCanvasElement) => {
 
 export {
   clearCanvas,
+  drawBox,
+  drawRect,
   drawPoint,
   drawLine,
   fill,

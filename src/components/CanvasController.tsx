@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { drawLine, drawPoint, fill } from '../lib/canvas';
+import { drawBox, drawLine, drawPoint, drawRect, fill } from '../lib/canvas';
 import { RGB } from '../lib/colors';
 import { getMouseButtons, MouseButton } from '../lib/events';
-import { Coordinates, Dimensions, Tool } from '../lib/types';
+import { type Coordinates, type Dimensions } from '../lib/geometry';
+import { type Tool } from '../lib/tools';
 import Canvas, { CallbackProps, CallbackProps as CanvasCallbackProps } from './Canvas';
 
 type Props = {
@@ -26,6 +27,7 @@ const CanvasController = ({
 }: Props) => {
   const [lastCoordinates, setLastCoordinates] = useState<Coordinates | null>(null);
   const [lineStart, setLineStart] = useState<Coordinates | null>(null);
+  const [rectStart, setRectStart] = useState<Coordinates | null>(null);
 
   const handleMouseDown = ({ event, coordinates }: CanvasCallbackProps) => {
     const buttons = getMouseButtons(event);
@@ -33,6 +35,10 @@ const CanvasController = ({
     switch (tool) {
       case 'line':
         setLineStart(coordinates);
+        break;
+      case 'box':
+      case 'rect':
+        setRectStart(coordinates);
     }
   };
 
@@ -54,6 +60,26 @@ const CanvasController = ({
           }
         }
         setLineStart(null);
+        break;
+      case 'box':
+        if (rectStart !== null) {
+          if (buttons.includes('left')) {
+            drawBox({ canvas, start: rectStart, end: coordinates, rgb: foregroundColor });
+          } else if (buttons.includes('right')) {
+            drawBox({ canvas, start: rectStart, end: coordinates, rgb: backgroundColor });
+          }
+        }
+        setRectStart(null);
+        break;
+      case 'rect':
+        if (rectStart !== null) {
+          if (buttons.includes('left')) {
+            drawRect({ canvas, start: rectStart, end: coordinates, rgb: foregroundColor });
+          } else if (buttons.includes('right')) {
+            drawRect({ canvas, start: rectStart, end: coordinates, rgb: backgroundColor });
+          }
+        }
+        setRectStart(null);
         break;
       case 'fill':
         if (buttons.includes('left')) {

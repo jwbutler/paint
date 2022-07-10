@@ -1,4 +1,4 @@
-import { Tool } from '../lib/types';
+import { Tool } from '../lib/tools';
 import styles from './Toolbox.module.css';
 
 type Props = {
@@ -24,6 +24,8 @@ const Toolbox = ({ tool, setTool }: Props) => {
     <div className={styles.toolbox}>
       <ToolButton tool="draw" />
       <ToolButton tool="line" />
+      <ToolButton tool="box" />
+      <ToolButton tool="rect" />
       <ToolButton tool="fill" />
     </div>
   );

@@ -1,7 +1,7 @@
 import { createRef, type MouseEvent, useEffect, useState } from 'react';
 import { clearCanvas } from '../lib/canvas';
 import { getEventCoordinates } from '../lib/events';
-import { Coordinates } from '../lib/types';
+import { type Coordinates } from '../lib/geometry';
 import styles from './Canvas.module.css';
 
 type CallbackProps = {
@@ -68,6 +68,7 @@ const Canvas = ({
     if (canvas) {
       const context = canvas.getContext('2d') as CanvasRenderingContext2D;
       context.imageSmoothingEnabled = false;
+      context.lineWidth = 1;
       clearCanvas(canvas);
     }
   // eslint-disable-next-line

@@ -1,5 +1,5 @@
 import { type MouseEvent } from 'react';
-import { Coordinates } from './types';
+import { type Coordinates } from './geometry';
 
 type MouseButton = 'left' | 'middle' | 'right';
 

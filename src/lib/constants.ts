@@ -1,5 +1,6 @@
 import { Colors, type RGB } from './colors';
-import { Dimensions, Tool } from './types';
+import { type Dimensions } from './geometry';
+import { type Tool } from './tools';
 
 const initialDimensions: Dimensions = { width: 80, height: 80 };
 const initialTool: Tool = 'draw';

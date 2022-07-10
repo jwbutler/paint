@@ -9,7 +9,8 @@ import {
   initialZoomLevel
 } from '../lib/constants';
 import { type MouseButton } from '../lib/events';
-import { Dimensions, Tool } from '../lib/types';
+import { type Dimensions} from '../lib/geometry';
+import { type Tool } from '../lib/tools';
 import styles from './App.module.css';
 import CanvasController from './CanvasController';
 import ColorPicker from './ColorPicker';

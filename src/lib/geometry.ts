@@ -8,10 +8,7 @@ type Coordinates = {
   y: number
 };
 
-type Tool = 'draw' | 'line' | 'fill';
-
 export type {
   Coordinates,
-  Dimensions,
-  Tool
+  Dimensions
 };
