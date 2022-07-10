@@ -14,6 +14,7 @@ type MouseEventHandler = ({ event, coordinates, canvas }: CallbackProps) => void
 type Props = {
   width: number,
   height: number,
+  zoomLevel: number,
   onMouseDown?: MouseEventHandler,
   onMouseUp?: MouseEventHandler,
   onMouseMove?: MouseEventHandler,
@@ -24,6 +25,7 @@ type Props = {
 const Canvas = ({
   width,
   height,
+  zoomLevel,
   onMouseDown,
   onMouseUp,
   onMouseMove,
@@ -39,7 +41,7 @@ const Canvas = ({
 
     handler({
       event,
-      coordinates: getEventCoordinates(event),
+      coordinates: getEventCoordinates(event, zoomLevel),
       canvas: ref.current
     });
   };
@@ -65,7 +67,7 @@ const Canvas = ({
       className={styles.canvas}
       width={width}
       height={height}
-      style={{ width: `${width}px`, height: `${height}px` }}
+      style={{ width: `${width * zoomLevel}px`, height: `${height * zoomLevel}px` }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}

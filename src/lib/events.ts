@@ -3,10 +3,10 @@ import { Coordinates } from './types';
 
 type MouseButton = 'left' | 'middle' | 'right';
 
-const getEventCoordinates = (e: MouseEvent): Coordinates => {
+const getEventCoordinates = (e: MouseEvent, zoomLevel: number): Coordinates => {
   const canvas = e.target as HTMLElement;
-  const x = e.clientX - canvas.offsetLeft; // TODO scrollLeft?
-  const y = e.clientY - canvas.offsetTop; // TODO scrollTop?
+  const x = (e.clientX - canvas.offsetLeft) / zoomLevel; // TODO scrollLeft?
+  const y = (e.clientY - canvas.offsetTop) / zoomLevel; // TODO scrollTop?
   return { x, y };
 };
 

@@ -47,7 +47,11 @@ const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
   context.fillStyle = rgb2css(rgb);
   const line = bresenham(start.x, start.y, end.x, end.y);
   for (const point of line) {
-    drawPoint({ canvas, coordinates: point, rgb });
+    const coordinates = {
+      x: Math.round(point.x),
+      y: Math.round(point.y)
+    };
+    drawPoint({ canvas, coordinates, rgb });
   }
 };
 

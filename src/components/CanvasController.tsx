@@ -11,10 +11,19 @@ type Props = {
   dimensions: Dimensions,
   foregroundColor: RGB,
   backgroundColor: RGB,
-  tool: Tool
+  tool: Tool,
+  zoomLevel: number
 }
 
-const CanvasController = ({ buttons, setButtons, dimensions, foregroundColor, backgroundColor, tool }: Props) => {
+const CanvasController = ({
+  buttons,
+  setButtons,
+  dimensions,
+  foregroundColor,
+  backgroundColor,
+  tool,
+  zoomLevel
+}: Props) => {
   const [lastCoordinates, setLastCoordinates] = useState<Coordinates | null>(null);
   const [lineStart, setLineStart] = useState<Coordinates | null>(null);
 
@@ -79,9 +88,8 @@ const CanvasController = ({ buttons, setButtons, dimensions, foregroundColor, ba
     }
   };
   
-  const handleMouseEnter = ({ event }: CallbackProps) => {
-    const { x, y } = getEventCoordinates(event);
-    setLastCoordinates({ x, y });
+  const handleMouseEnter = ({ coordinates }: CallbackProps) => {
+    setLastCoordinates(coordinates);
   };
   
   const handleMouseLeave = () => {
@@ -92,6 +100,7 @@ const CanvasController = ({ buttons, setButtons, dimensions, foregroundColor, ba
     <Canvas
       width={dimensions.width}
       height={dimensions.height}
+      zoomLevel={zoomLevel}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
