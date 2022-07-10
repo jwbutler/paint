@@ -16,10 +16,15 @@ type Props = {
 
 const CanvasController = ({ buttons, setButtons, dimensions, foregroundColor, backgroundColor, tool }: Props) => {
   const [lastCoordinates, setLastCoordinates] = useState<Coordinates | null>(null);
+  const [lineStart, setLineStart] = useState<Coordinates | null>(null);
 
   const handleMouseDown = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
     const buttons = getMouseButtons(event);
     setButtons(buttons);
+    switch (tool) {
+      case 'line':
+        setLineStart(coordinates);
+    }
   };
 
   const handleMouseUp = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
@@ -30,6 +35,16 @@ const CanvasController = ({ buttons, setButtons, dimensions, foregroundColor, ba
         } else if (buttons.includes('right')) {
           drawPoint({ canvas, coordinates, rgb: backgroundColor });
         }
+        break;
+      case 'line':
+        if (lineStart !== null) {
+          if (buttons.includes('left')) {
+            drawLine({ canvas, start: lineStart, end: coordinates, rgb: foregroundColor });
+          } else if (buttons.includes('right')) {
+            drawLine({ canvas, start: lineStart, end: coordinates, rgb: backgroundColor });
+          }
+        }
+        setLineStart(null);
         break;
       case 'fill':
         if (buttons.includes('left')) {
