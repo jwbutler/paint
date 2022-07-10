@@ -2,6 +2,7 @@ import { createRef, type MouseEvent, useEffect, useState } from 'react';
 import { clearCanvas } from '../lib/canvas';
 import { getEventCoordinates } from '../lib/events';
 import { type Coordinates } from '../lib/geometry';
+import { ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
 import styles from './Canvas.module.css';
 
 type CallbackProps = {
@@ -15,7 +16,7 @@ type MouseEventHandler = ({ event, coordinates, canvas }: CallbackProps) => void
 type Props = {
   width: number,
   height: number,
-  zoomLevel: number,
+  zoomLevel: ZoomLevel,
   onMouseDown?: MouseEventHandler,
   onMouseUp?: MouseEventHandler,
   onMouseMove?: MouseEventHandler,
@@ -83,6 +84,8 @@ const Canvas = ({
     }
   // eslint-disable-next-line
   }, [width, height, ref.current]);
+  
+  const multiplier = zoomLevelAsNumber(zoomLevel);
 
   return (
     <canvas
@@ -91,7 +94,10 @@ const Canvas = ({
       className={styles.canvas}
       width={width}
       height={height}
-      style={{ width: `${width * zoomLevel}px`, height: `${height * zoomLevel}px` }}
+      style={{
+        width: `${width * multiplier}px`,
+        height: `${height * multiplier}px`
+    }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}

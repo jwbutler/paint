@@ -1,12 +1,14 @@
 import { type MouseEvent } from 'react';
 import { type Coordinates } from './geometry';
+import { type ZoomLevel, zoomLevelAsNumber } from './zoom';
 
 type MouseButton = 'left' | 'middle' | 'right';
 
-const getEventCoordinates = (e: MouseEvent, zoomLevel: number): Coordinates => {
+const getEventCoordinates = (e: MouseEvent, zoomLevel: ZoomLevel): Coordinates => {
   const canvas = e.target as HTMLElement;
-  const x = Math.floor((e.clientX - canvas.offsetLeft) / zoomLevel); // TODO scrollLeft?
-  const y = Math.floor((e.clientY - canvas.offsetTop) / zoomLevel); // TODO scrollTop?
+  const multiplier = 1 / zoomLevelAsNumber(zoomLevel);
+  const x = Math.floor((e.clientX - canvas.offsetLeft) * multiplier); // TODO scrollLeft?
+  const y = Math.floor((e.clientY - canvas.offsetTop) * multiplier); // TODO scrollTop?
   return { x, y };
 };
 

@@ -11,16 +11,18 @@ import {
 import { type MouseButton } from '../lib/events';
 import { type Dimensions} from '../lib/geometry';
 import { type ToolType } from '../lib/tools';
+import { ZoomLevel } from '../lib/zoom';
 import styles from './App.module.css';
 import CanvasController from './CanvasController';
 import ColorPicker from './ColorPicker';
 import MenuController from './MenuController';
 import SelectedColors from './SelectedColors';
 import Toolbox from './Toolbox';
+import ZoomLevelSelector from './ZoomLevelSelector';
 
 const App = () => {
   const [dimensions, setDimensions] = useState<Dimensions>(initialDimensions);
-  const [zoomLevel] = useState<number>(initialZoomLevel);
+  const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(initialZoomLevel);
   const [tool, setTool] = useState<ToolType>(initialTool);
   const [foregroundColor, setForegroundColor] = useState<RGB>(initialForegroundColor);
   const [backgroundColor, setBackgroundColor] = useState<RGB>(initialBackgroundColor);
@@ -59,10 +61,16 @@ const App = () => {
         resizeCanvas={handleResizeCanvas}
       />
       <div className={styles.main}>
-        <Toolbox
-          tool={tool}
-          setTool={setTool}
-        />
+        <div className={styles.left}>
+          <Toolbox
+            tool={tool}
+            setTool={setTool}
+          />
+          <ZoomLevelSelector
+            zoomLevel={zoomLevel}
+            setZoomLevel={setZoomLevel}
+          />
+        </div>
         <CanvasController
           buttons={buttons}
           setButtons={setButtons}

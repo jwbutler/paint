@@ -3,17 +3,8 @@ import { RGB } from '../lib/colors';
 import { getMouseButtons, MouseButton } from '../lib/events';
 import { type Dimensions } from '../lib/geometry';
 import { BoxTool, DrawTool, FillTool, LineTool, RectTool, Tool, type ToolType } from '../lib/tools';
+import { ZoomLevel } from '../lib/zoom';
 import Canvas, { CallbackProps as CanvasCallbackProps } from './Canvas';
-
-type Props = {
-  buttons: MouseButton[],
-  setButtons: (buttons: MouseButton[]) => void;
-  dimensions: Dimensions,
-  foregroundColor: RGB,
-  backgroundColor: RGB,
-  tool: ToolType,
-  zoomLevel: number
-}
 
 const drawTool = new DrawTool();
 const lineTool = new LineTool();
@@ -30,6 +21,16 @@ const getTool = (tool: ToolType): Tool => {
     case 'fill': return fillTool;
   }
 };
+
+type Props = {
+  buttons: MouseButton[],
+  setButtons: (buttons: MouseButton[]) => void;
+  dimensions: Dimensions,
+  foregroundColor: RGB,
+  backgroundColor: RGB,
+  tool: ToolType,
+  zoomLevel: ZoomLevel
+}
 
 const CanvasController = ({
   buttons,

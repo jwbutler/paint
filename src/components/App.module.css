@@ -24,6 +24,12 @@
   gap: 20px;
 }
 
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .bottom {
   display: flex;
   flex-direction: row;
