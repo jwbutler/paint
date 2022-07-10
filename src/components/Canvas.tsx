@@ -1,4 +1,4 @@
-import { createRef, type MouseEvent, useEffect } from 'react';
+import { createRef, type MouseEvent, useEffect, useState } from 'react';
 import { clearCanvas } from '../lib/canvas';
 import { Colors, rgb2css } from '../lib/colors';
 import { getEventCoordinates } from '../lib/events';
@@ -34,6 +34,7 @@ const Canvas = ({
   onMouseEnter,
   onMouseLeave
 }: Props) => {
+  const [imageData, setImageData] = useState<ImageData | null>(null);
   const ref = createRef<HTMLCanvasElement>();
 
   const handleMouseEvent = (event: MouseEvent, handler?: MouseEventHandler) => {
@@ -48,6 +49,9 @@ const Canvas = ({
       coordinates: getEventCoordinates(event, zoomLevel),
       canvas
     });
+    
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+    setImageData(context.getImageData(0, 0, canvas.width, canvas.height));
   };
   
   const handleMouseDown = (event: MouseEvent) => handleMouseEvent(event, onMouseDown);
@@ -65,6 +69,16 @@ const Canvas = ({
     }
   // eslint-disable-next-line
   }, []);
+  
+  useEffect(() => {
+    const canvas = ref.current;
+    if (canvas && imageData) {
+      clearCanvas(canvas);
+      const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+      context.putImageData(imageData, 0, 0);
+    }
+  // eslint-disable-next-line
+  }, [width, height, ref.current]);
 
   return (
     <canvas

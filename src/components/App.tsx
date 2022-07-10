@@ -11,6 +11,7 @@ import {
 import { type MouseButton } from '../lib/events';
 import { Dimensions, Tool } from '../lib/types';
 import styles from './App.module.css';
+import Canvas from './Canvas';
 import CanvasController from './CanvasController';
 import ColorPicker from './ColorPicker';
 import MenuController from './MenuController';
@@ -43,12 +44,19 @@ const App = () => {
     await loadImage(canvas);
   };
   
+  const handleResizeCanvas = () => {
+    const width = parseInt(prompt('Enter width in pixels') || dimensions.width.toString());
+    const height = parseInt(prompt('Enter height in pixels') || dimensions.height.toString());
+    setDimensions({ width, height });
+  };
+  
   return (
     <div className={styles.app}>
       <MenuController
         clearCanvas={handleClearCanvas}
         saveImage={handleSaveImage}
         loadImage={handleLoadImage}
+        resizeCanvas={handleResizeCanvas}
       />
       <div className={styles.main}>
         <Toolbox

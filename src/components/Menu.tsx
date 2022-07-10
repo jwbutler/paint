@@ -31,7 +31,7 @@ const Menu = ({ data }: Props) => {
       }
     };
     return (
-      <>
+      <div className={styles.category}>
         <button
           className={styles.header}
           onClick={handleClick}
@@ -46,7 +46,7 @@ const Menu = ({ data }: Props) => {
             {children}
           </div>
         )}
-      </>
+      </div>
     );
   };
 
