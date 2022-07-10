@@ -19,15 +19,22 @@ class CoordinatesHashSet {
     this.add(...coordinates);
   }
   
+  private encode = ({ x, y }: Coordinates): string => `${x},${y}`;
+  private decode = (encoded: string) => ({
+    x: parseInt(encoded.split(',')[0]),
+    y: parseInt(encoded.split(',')[1]),
+  });
+  
   add = (...coordinates: Coordinates[]) => {
     for (const { x, y } of coordinates) {
-      this._set.add(JSON.stringify({ x, y }));
+      this._set.add(this.encode({ x, y }));
     }
   };
 
-  contains = (coordinates: Coordinates) => this._set.has(JSON.stringify(coordinates));
+  contains = ({ x, y }: Coordinates) => this._set.has(this.encode({ x, y }));
   clear = () => this._set.clear();
-  values = (): Coordinates[] => [...this._set.values()].map(json => JSON.parse(json));
+  values = (): Coordinates[] => [...this._set.values()].map(encoded => this.decode(encoded));
+  size = () => this._set.size;
 }
 
 const drawPoint = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
@@ -61,19 +68,24 @@ const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
  */
 const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  context.fillStyle = rgb2css(rgb);
-  const startColor: RGB = getColor(canvas, { x, y });
+  const imageData = context.getImageData(x, y, 1, 1);
+  const startColor: RGB = getColor(imageData, { x, y });
   const toFill = new CoordinatesHashSet({ x, y });
   const current = new CoordinatesHashSet({ x, y });
+  context.fillStyle = rgb2css(rgb);
   
   const findFillableNeighbors = ({ x, y }: Coordinates): Coordinates[] => {
     return [{ x, y: y - 1 }, { x: x - 1, y }, { x: x + 1, y }, { x, y: y + 1 }]
       .filter(({ x, y }) => x >= 0 && y >= 0 && x < canvas.width && y < canvas.height)
-      .filter(({ x, y }) => rgbEquals(getColor(canvas, { x, y }), startColor))
+      .filter(({ x, y }) => rgbEquals(getColor(imageData, { x, y }), startColor))
       .filter(({ x, y }) => !toFill.contains({ x, y }));
   };
   
-  while (true) {
+  const t1 = new Date().getTime();
+  let iterations = 0;
+  let pointsProcessed = 0;
+  for (true; true; iterations++) {
+    pointsProcessed += current.size();
     const newNeighbors: Coordinates[] = [];
     for (const { x, y } of current.values()) {
       newNeighbors.push(...findFillableNeighbors({ x, y }));
@@ -85,15 +97,17 @@ const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
     current.add(...newNeighbors);
     toFill.add(...newNeighbors);
   }
-  
+  console.log(`iterations: ${iterations}`);
+  console.log(`points: ${pointsProcessed}`);
+  const t2 = new Date().getTime();
   for (const { x, y } of toFill.values()) {
     drawPoint({ canvas, coordinates: { x, y }, rgb }); 
   }
+  const t3 = new Date().getTime();
+  console.log(`fill: ${t2 - t1} ${t3 - t2}`);
 };
 
-const getColor = (canvas: HTMLCanvasElement, { x, y }: Coordinates): RGB => {
-  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  const imageData = context.getImageData(x, y, 1, 1);
+const getColor = (imageData: ImageData, { x, y }: Coordinates): RGB => {
   const [r, g, b] = imageData.data;
   return {
     red: r,
