@@ -10,7 +10,7 @@ import {
 } from '../lib/constants';
 import { type MouseButton } from '../lib/events';
 import { type Dimensions} from '../lib/geometry';
-import { type Tool } from '../lib/tools';
+import { type ToolType } from '../lib/tools';
 import styles from './App.module.css';
 import CanvasController from './CanvasController';
 import ColorPicker from './ColorPicker';
@@ -21,7 +21,7 @@ import Toolbox from './Toolbox';
 const App = () => {
   const [dimensions, setDimensions] = useState<Dimensions>(initialDimensions);
   const [zoomLevel] = useState<number>(initialZoomLevel);
-  const [tool, setTool] = useState<Tool>(initialTool);
+  const [tool, setTool] = useState<ToolType>(initialTool);
   const [foregroundColor, setForegroundColor] = useState<RGB>(initialForegroundColor);
   const [backgroundColor, setBackgroundColor] = useState<RGB>(initialBackgroundColor);
   const [buttons, setButtons] = useState<MouseButton[]>([]);

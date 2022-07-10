@@ -1,14 +1,14 @@
-import { Tool } from '../lib/tools';
+import { ToolType } from '../lib/tools';
 import styles from './Toolbox.module.css';
 
 type Props = {
-  tool: Tool,
-  setTool: (tool: Tool) => void;
+  tool: ToolType,
+  setTool: (tool: ToolType) => void;
 };
 
 const Toolbox = ({ tool, setTool }: Props) => {
   const _tool = tool;
-  const ToolButton = ({ tool }: { tool: Tool }) => {
+  const ToolButton = ({ tool }: { tool: ToolType }) => {
     const selected = (tool === _tool);
     return (
       <button

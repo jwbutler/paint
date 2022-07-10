@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { drawBox, drawLine, drawPoint, drawRect, fill } from '../lib/canvas';
+import React from 'react';
 import { RGB } from '../lib/colors';
 import { getMouseButtons, MouseButton } from '../lib/events';
-import { type Coordinates, type Dimensions } from '../lib/geometry';
-import { type Tool } from '../lib/tools';
-import Canvas, { CallbackProps, CallbackProps as CanvasCallbackProps } from './Canvas';
+import { type Dimensions } from '../lib/geometry';
+import { BoxTool, DrawTool, FillTool, LineTool, RectTool, Tool, type ToolType } from '../lib/tools';
+import Canvas, { CallbackProps as CanvasCallbackProps } from './Canvas';
 
 type Props = {
   buttons: MouseButton[],
@@ -12,9 +11,25 @@ type Props = {
   dimensions: Dimensions,
   foregroundColor: RGB,
   backgroundColor: RGB,
-  tool: Tool,
+  tool: ToolType,
   zoomLevel: number
 }
+
+const drawTool = new DrawTool();
+const lineTool = new LineTool();
+const boxTool = new BoxTool();
+const rectTool = new RectTool();
+const fillTool = new FillTool();
+
+const getTool = (tool: ToolType): Tool => {
+  switch (tool) {
+    case 'draw': return drawTool;
+    case 'line': return lineTool;
+    case 'box':  return boxTool;
+    case 'rect': return rectTool;
+    case 'fill': return fillTool;
+  }
+};
 
 const CanvasController = ({
   buttons,
@@ -25,101 +40,31 @@ const CanvasController = ({
   tool,
   zoomLevel
 }: Props) => {
-  const [lastCoordinates, setLastCoordinates] = useState<Coordinates | null>(null);
-  const [lineStart, setLineStart] = useState<Coordinates | null>(null);
-  const [rectStart, setRectStart] = useState<Coordinates | null>(null);
-
-  const handleMouseDown = ({ event, coordinates }: CanvasCallbackProps) => {
+  const handleMouseDown = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
     const buttons = getMouseButtons(event);
     setButtons(buttons);
-    switch (tool) {
-      case 'line':
-        setLineStart(coordinates);
-        break;
-      case 'box':
-      case 'rect':
-        setRectStart(coordinates);
-    }
+
+    getTool(tool).handleMouseDown({ coordinates, canvas, buttons, foregroundColor, backgroundColor });
   };
 
   const handleMouseUp = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
-    switch (tool) {
-      case 'draw':
-        if (buttons.includes('left')) {
-          drawPoint({ canvas, coordinates, rgb: foregroundColor });
-        } else if (buttons.includes('right')) {
-          drawPoint({ canvas, coordinates, rgb: backgroundColor });
-        }
-        break;
-      case 'line':
-        if (lineStart !== null) {
-          if (buttons.includes('left')) {
-            drawLine({ canvas, start: lineStart, end: coordinates, rgb: foregroundColor });
-          } else if (buttons.includes('right')) {
-            drawLine({ canvas, start: lineStart, end: coordinates, rgb: backgroundColor });
-          }
-        }
-        setLineStart(null);
-        break;
-      case 'box':
-        if (rectStart !== null) {
-          if (buttons.includes('left')) {
-            drawBox({ canvas, start: rectStart, end: coordinates, rgb: foregroundColor });
-          } else if (buttons.includes('right')) {
-            drawBox({ canvas, start: rectStart, end: coordinates, rgb: backgroundColor });
-          }
-        }
-        setRectStart(null);
-        break;
-      case 'rect':
-        if (rectStart !== null) {
-          if (buttons.includes('left')) {
-            drawRect({ canvas, start: rectStart, end: coordinates, rgb: foregroundColor });
-          } else if (buttons.includes('right')) {
-            drawRect({ canvas, start: rectStart, end: coordinates, rgb: backgroundColor });
-          }
-        }
-        setRectStart(null);
-        break;
-      case 'fill':
-        if (buttons.includes('left')) {
-          fill({ canvas, coordinates, rgb: foregroundColor });
-        } else if (buttons.includes('right')) {
-          fill({ canvas, coordinates, rgb: backgroundColor });
-        }
-        break;
-    }
+    getTool(tool).handleMouseUp({ coordinates, canvas, buttons, foregroundColor, backgroundColor });
     setButtons(getMouseButtons(event));
-    setLastCoordinates(null);
   };
 
   const handleMouseMove = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
     const buttons = getMouseButtons(event);
-    switch (tool) {
-      case 'draw':
-        if (buttons.includes('left')) {
-          if (lastCoordinates) {
-            drawLine({ canvas, start: lastCoordinates, end: coordinates, rgb: foregroundColor });
-          } else {
-            drawPoint({ canvas, coordinates, rgb: foregroundColor });
-          }
-        } else if (buttons.includes('right')) {
-          if (lastCoordinates) {
-            drawLine({ canvas, start: lastCoordinates, end: coordinates, rgb: backgroundColor });
-          } else {
-            drawPoint({ canvas, coordinates, rgb: backgroundColor });
-          }
-        }
-        setLastCoordinates(coordinates);
-    }
+    getTool(tool).handleMouseMove({ buttons, canvas, coordinates, foregroundColor, backgroundColor });
   };
   
-  const handleMouseEnter = ({ coordinates }: CallbackProps) => {
-    setLastCoordinates(coordinates);
+  const handleMouseEnter = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
+    const buttons = getMouseButtons(event);
+    getTool(tool).handleMouseEnter({ buttons, canvas, coordinates, foregroundColor, backgroundColor });
   };
   
-  const handleMouseLeave = () => {
-    setLastCoordinates(null);
+  const handleMouseLeave = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
+    const buttons = getMouseButtons(event);
+    getTool(tool).handleMouseLeave({ buttons, canvas, coordinates, foregroundColor, backgroundColor });
   };
   
   return (
