@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { drawLine, drawPoint, fill } from '../lib/canvas';
 import { RGB } from '../lib/colors';
-import { getEventCoordinates, getMouseButtons, MouseButton } from '../lib/events';
+import { getMouseButtons, MouseButton } from '../lib/events';
 import { Coordinates, Dimensions, Tool } from '../lib/types';
 import Canvas, { CallbackProps, CallbackProps as CanvasCallbackProps } from './Canvas';
 
@@ -27,7 +27,7 @@ const CanvasController = ({
   const [lastCoordinates, setLastCoordinates] = useState<Coordinates | null>(null);
   const [lineStart, setLineStart] = useState<Coordinates | null>(null);
 
-  const handleMouseDown = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
+  const handleMouseDown = ({ event, coordinates }: CanvasCallbackProps) => {
     const buttons = getMouseButtons(event);
     setButtons(buttons);
     switch (tool) {

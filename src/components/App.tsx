@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { type RGB } from '../lib/colors';
+import { clearCanvas, loadImage, saveImage } from '../lib/canvas';
+import { Colors, type RGB, rgb2css } from '../lib/colors';
 import {
   initialTool,
   initialDimensions,
@@ -24,12 +25,30 @@ const App = () => {
   const [backgroundColor, setBackgroundColor] = useState<RGB>(initialBackgroundColor);
   const [buttons, setButtons] = useState<MouseButton[]>([]);
   
+  const handleClearCanvas = () => {
+    // I'm sure there is a fancy React-y way to do this.  But React sux
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    clearCanvas(canvas);
+  };
+  
+  const handleSaveImage = () => {
+    // I'm sure there is a fancy React-y way to do this.  But React sux
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    saveImage(canvas);
+  };
+  
+  const handleLoadImage = async () => {
+    // I'm sure there is a fancy React-y way to do this.  But React sux
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    await loadImage(canvas);
+  };
+  
   return (
     <div className={styles.app}>
       <MenuController
-        clearCanvas={() => {}}
-        saveCanvas={() => {}}
-        loadCanvas={() => {}}
+        clearCanvas={handleClearCanvas}
+        saveImage={handleSaveImage}
+        loadImage={handleLoadImage}
       />
       <div className={styles.main}>
         <Toolbox

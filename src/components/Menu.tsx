@@ -39,11 +39,35 @@ const Menu = ({ data }: Props) => {
           {label}
         </button>
         {isOpen && (
-          <div className={styles.subMenu}>
+          <div
+            className={styles.subMenu}
+            onMouseLeave={() => setSelectedHeader(null)}
+          >
             {children}
           </div>
         )}
       </>
+    );
+  };
+
+  type ItemProps = {
+    label: string,
+    onClick: () => void
+  };
+  
+  const Item = ({ label, onClick }: ItemProps) => {
+    const handleClick = () => {
+      onClick();
+      setSelectedHeader(null);
+    };
+
+    return (
+      <button
+        className={styles.item}
+        onClick={handleClick}
+      >
+        {label}
+      </button>
     );
   };
 
@@ -57,22 +81,6 @@ const Menu = ({ data }: Props) => {
         </Header>
       ))}
     </div>
-  );
-};
-
-type ItemProps = {
-  label: string,
-  onClick: () => void
-};
-
-const Item = ({ label, onClick }: ItemProps) => {
-  return (
-    <button
-      className={styles.item}
-      onClick={onClick}
-    >
-      {label}
-    </button>
   );
 };
 

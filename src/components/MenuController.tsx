@@ -2,18 +2,18 @@ import Menu, { type MenuData } from './Menu';
 
 type Props = {
   clearCanvas: () => void,
-  saveCanvas: () => void,
-  loadCanvas: () => void
+  saveImage: () => void,
+  loadImage: () => Promise<void>
 };
 
-const MenuController = ({ clearCanvas, saveCanvas, loadCanvas }: Props) => {
+const MenuController = ({ clearCanvas, saveImage, loadImage }: Props) => {
   const data: MenuData[] = [
     {
       title: 'File',
       items: [
         { label: 'New', onSelect: clearCanvas },
-        { label: 'Save', onSelect: saveCanvas },
-        { label: 'Load', onSelect: loadCanvas },
+        { label: 'Save', onSelect: saveImage },
+        { label: 'Load', onSelect: loadImage },
       ]
     }
   ];

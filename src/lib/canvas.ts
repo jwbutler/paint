@@ -1,6 +1,7 @@
-import { rgb2css } from './colors';
+import { Colors, rgb2css } from './colors';
 import type { Coordinates } from './types';
 import type { RGB } from './colors';
+// TODO write a .d.ts for this
 // @ts-ignore
 import bresenham from 'bresenham';
 
@@ -29,10 +30,10 @@ class CoordinatesHashSet {
   values = (): Coordinates[] => [...this._set.values()].map(json => JSON.parse(json));
 }
 
-const drawPoint = ({ canvas, coordinates: { x, y }, rgb: { red, green, blue } }: DrawProps) => {
+const drawPoint = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  context.fillStyle = `rgb(${red}, ${green}, ${blue})`;
-  context.fillRect(x, y, 1, 1);
+  context.fillStyle = rgb2css(rgb);
+  context.fillRect(Math.floor(x), Math.floor(y), 1, 1);
 };
 
 type LineProps = {
@@ -48,8 +49,8 @@ const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
   const line = bresenham(start.x, start.y, end.x, end.y);
   for (const point of line) {
     const coordinates = {
-      x: Math.round(point.x),
-      y: Math.round(point.y)
+      x: Math.floor(point.x),
+      y: Math.floor(point.y)
     };
     drawPoint({ canvas, coordinates, rgb });
   }
@@ -60,17 +61,16 @@ const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
  */
 const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  const { red, green, blue } = rgb;
-  context.fillStyle = `rgb(${red}, ${green}, ${blue})`;
+  context.fillStyle = rgb2css(rgb);
   const startColor: RGB = getColor(canvas, { x, y });
-  const visitedCoordinates = new CoordinatesHashSet({ x, y });
+  const toFill = new CoordinatesHashSet({ x, y });
   const current = new CoordinatesHashSet({ x, y });
   
   const findFillableNeighbors = ({ x, y }: Coordinates): Coordinates[] => {
     return [{ x, y: y - 1 }, { x: x - 1, y }, { x: x + 1, y }, { x, y: y + 1 }]
       .filter(({ x, y }) => x >= 0 && y >= 0 && x < canvas.width && y < canvas.height)
       .filter(({ x, y }) => rgbEquals(getColor(canvas, { x, y }), startColor))
-      .filter(({ x, y }) => !visitedCoordinates.contains({ x, y }));
+      .filter(({ x, y }) => !toFill.contains({ x, y }));
   };
   
   while (true) {
@@ -83,10 +83,10 @@ const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
     }
     current.clear();
     current.add(...newNeighbors);
-    visitedCoordinates.add(...newNeighbors);
+    toFill.add(...newNeighbors);
   }
   
-  for (const { x, y } of visitedCoordinates.values()) {
+  for (const { x, y } of toFill.values()) {
     drawPoint({ canvas, coordinates: { x, y }, rgb }); 
   }
 };
@@ -107,8 +107,49 @@ const rgbEquals = (first: RGB, second: RGB): boolean =>
   && first.green === second.green
   && first.blue === second.blue;
 
+const clearCanvas = (canvas: HTMLCanvasElement) => {
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.fillStyle = rgb2css(Colors.WHITE);
+  context.fillRect(0, 0, canvas.width, canvas.height);
+};
+
+const saveImage = (canvas: HTMLCanvasElement) => {
+  let filename: string | null = null;
+  do {
+    filename = prompt('Enter a filename');
+  } while (!filename);
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL();
+  link.click();
+};
+
+const loadImage = async (canvas: HTMLCanvasElement) => {
+  const input = document.createElement('input') as HTMLInputElement;
+  input.type = 'file';
+  input.accept = 'image/png';
+  input.onchange = () => {
+    if (input.files) {
+      const file = input.files[0];
+      const url = window.URL.createObjectURL(file);
+      const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+      const img = document.createElement('img');
+      img.src = url;
+      img.addEventListener('load', () => {
+        context.drawImage(img, 0, 0);
+      });
+    }
+  };
+  input.style.display = 'none';
+  console.log(input);
+  input.click();
+};
+
 export {
+  clearCanvas,
   drawPoint,
   drawLine,
-  fill
+  fill,
+  loadImage,
+  saveImage
 };
