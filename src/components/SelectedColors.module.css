@@ -1,0 +1,24 @@
+.selectedColors {
+  border: 1px solid black;
+  width: 70px;
+  height: 70px;
+  padding: 10px;
+  position: relative;
+}
+
+.color {
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  border: 1px solid black;
+}
+
+.foreground {
+  left: 10px;
+  top: 10px;
+}
+
+.background {
+  right: 10px;
+  bottom: 10px;
+}

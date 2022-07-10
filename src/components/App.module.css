@@ -1,0 +1,34 @@
+.app {
+  margin: 20px;
+}
+
+/* menu */
+.app > :nth-child(1) {
+}
+
+/* toolbox */
+.app > :nth-child(2) {}
+
+/* canvas */
+.app > :nth-child(3) {}
+
+/* color picker */
+.app > :nth-child(4) {}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  margin: 20px 0;
+  gap: 20px;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  margin: 20px 0;
+  gap: 20px;
+}

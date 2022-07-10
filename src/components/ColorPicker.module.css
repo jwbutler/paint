@@ -1,0 +1,16 @@
+.colorPicker {
+  height: 70px;
+  display: inline-grid;
+  grid-template-rows: 20px 20px;
+  grid-template-columns: repeat(9, 20px [col-start]);
+  gap: 10px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.color {
+  width: 20px;
+  outline: 1px solid #000000;
+  cursor: pointer;
+}

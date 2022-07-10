@@ -1,0 +1,5 @@
+.canvas {
+  outline: 1px solid black;
+  cursor: crosshair;
+  image-rendering: pixelated;
+}

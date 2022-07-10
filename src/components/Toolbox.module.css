@@ -1,0 +1,31 @@
+.toolbox {
+  display: grid;
+  grid-template-columns: 50px 50px;
+  gap: 10px;
+  padding: 10px;
+  min-width: 40px;
+  height: 100%;
+  background-color: #f0f0f0;
+  border: 1px solid #808080;
+}
+
+.tool {
+  border: 1px solid #808080;
+  border-radius: 3px;
+}
+
+.tool:not(.selected) {
+  background-color: #ffffff;
+}
+
+.tool:hover:not(.selected) {
+  background-color: #f0f0ef;  
+}
+
+.tool:active:not(.selected) {
+  background-color: #e0e0e0;  
+}
+
+.tool.selected {
+  background-color: #e0e0e0;
+}
