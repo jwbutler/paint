@@ -1,6 +1,5 @@
 import { createRef, type MouseEvent, useEffect, useState } from 'react';
 import { clearCanvas } from '../lib/canvas';
-import { Colors, rgb2css } from '../lib/colors';
 import { getEventCoordinates } from '../lib/events';
 import { Coordinates } from '../lib/types';
 import styles from './Canvas.module.css';

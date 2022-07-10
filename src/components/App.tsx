@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { clearCanvas, loadImage, saveImage } from '../lib/canvas';
-import { Colors, type RGB, rgb2css } from '../lib/colors';
+import { type RGB } from '../lib/colors';
 import {
   initialTool,
   initialDimensions,
@@ -11,7 +11,6 @@ import {
 import { type MouseButton } from '../lib/events';
 import { Dimensions, Tool } from '../lib/types';
 import styles from './App.module.css';
-import Canvas from './Canvas';
 import CanvasController from './CanvasController';
 import ColorPicker from './ColorPicker';
 import MenuController from './MenuController';
@@ -20,7 +19,7 @@ import Toolbox from './Toolbox';
 
 const App = () => {
   const [dimensions, setDimensions] = useState<Dimensions>(initialDimensions);
-  const [zoomLevel, setZoomLevel] = useState<number>(initialZoomLevel);
+  const [zoomLevel] = useState<number>(initialZoomLevel);
   const [tool, setTool] = useState<Tool>(initialTool);
   const [foregroundColor, setForegroundColor] = useState<RGB>(initialForegroundColor);
   const [backgroundColor, setBackgroundColor] = useState<RGB>(initialBackgroundColor);
