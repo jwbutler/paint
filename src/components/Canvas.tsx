@@ -48,13 +48,17 @@ const Canvas = ({
       coordinates: getEventCoordinates(event, zoomLevel),
       canvas
     });
-    
-    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-    setImageData(context.getImageData(0, 0, canvas.width, canvas.height));
   };
   
   const handleMouseDown = (event: MouseEvent) => handleMouseEvent(event, onMouseDown);
-  const handleMouseUp = (event: MouseEvent) => handleMouseEvent(event, onMouseUp);
+  const handleMouseUp = (event: MouseEvent) => {
+    handleMouseEvent(event, onMouseUp);
+    const canvas = ref.current;
+    if (canvas) {
+      const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+      setImageData(context.getImageData(0, 0, canvas.width, canvas.height));
+    }
+  };
   const handleMouseMove = (event: MouseEvent) => handleMouseEvent(event, onMouseMove);
   const handleMouseEnter = (event: MouseEvent) => handleMouseEvent(event, onMouseEnter);
   const handleMouseLeave = (event: MouseEvent) => handleMouseEvent(event, onMouseLeave);

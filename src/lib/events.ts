@@ -5,8 +5,8 @@ type MouseButton = 'left' | 'middle' | 'right';
 
 const getEventCoordinates = (e: MouseEvent, zoomLevel: number): Coordinates => {
   const canvas = e.target as HTMLElement;
-  const x = (e.clientX - canvas.offsetLeft) / zoomLevel; // TODO scrollLeft?
-  const y = (e.clientY - canvas.offsetTop) / zoomLevel; // TODO scrollTop?
+  const x = Math.floor((e.clientX - canvas.offsetLeft) / zoomLevel); // TODO scrollLeft?
+  const y = Math.floor((e.clientY - canvas.offsetTop) / zoomLevel); // TODO scrollTop?
   return { x, y };
 };
 

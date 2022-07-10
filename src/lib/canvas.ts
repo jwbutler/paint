@@ -68,7 +68,7 @@ const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
  */
 const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  const imageData = context.getImageData(x, y, 1, 1);
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
   const startColor: RGB = getColor(imageData, { x, y });
   const toFill = new CoordinatesHashSet({ x, y });
   const current = new CoordinatesHashSet({ x, y });
@@ -81,11 +81,7 @@ const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
       .filter(({ x, y }) => !toFill.contains({ x, y }));
   };
   
-  const t1 = new Date().getTime();
-  let iterations = 0;
-  let pointsProcessed = 0;
-  for (true; true; iterations++) {
-    pointsProcessed += current.size();
+  while (true) {
     const newNeighbors: Coordinates[] = [];
     for (const { x, y } of current.values()) {
       newNeighbors.push(...findFillableNeighbors({ x, y }));
@@ -97,18 +93,14 @@ const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
     current.add(...newNeighbors);
     toFill.add(...newNeighbors);
   }
-  console.log(`iterations: ${iterations}`);
-  console.log(`points: ${pointsProcessed}`);
-  const t2 = new Date().getTime();
   for (const { x, y } of toFill.values()) {
     drawPoint({ canvas, coordinates: { x, y }, rgb }); 
   }
-  const t3 = new Date().getTime();
-  console.log(`fill: ${t2 - t1} ${t3 - t2}`);
 };
 
 const getColor = (imageData: ImageData, { x, y }: Coordinates): RGB => {
-  const [r, g, b] = imageData.data;
+  const index = (y * imageData.width + x) * 4;
+  const [r, g, b] = imageData.data.slice(index, index + 4);
   return {
     red: r,
     green: g,
