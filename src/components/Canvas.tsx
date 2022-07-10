@@ -9,12 +9,16 @@ type CallbackProps = {
   canvas: HTMLCanvasElement
 };
 
+type MouseEventHandler = ({ event, coordinates, canvas }: CallbackProps) => void; 
+
 type Props = {
   width: number,
   height: number,
-  onMouseDown: ({ coordinates, canvas }: CallbackProps) => void,
-  onMouseUp: ({ coordinates, canvas }: CallbackProps) => void,
-  onMouseMove: ({ coordinates, canvas }: CallbackProps) => void,
+  onMouseDown?: MouseEventHandler,
+  onMouseUp?: MouseEventHandler,
+  onMouseMove?: MouseEventHandler,
+  onMouseEnter?: MouseEventHandler,
+  onMouseLeave?: MouseEventHandler
 };
 
 const Canvas = ({
@@ -22,14 +26,17 @@ const Canvas = ({
   height,
   onMouseDown,
   onMouseUp,
-  onMouseMove
+  onMouseMove,
+  onMouseEnter,
+  onMouseLeave
 }: Props) => {
   const ref = createRef<HTMLCanvasElement>();
 
-  const handleMouseEvent = (event: MouseEvent, handler: (props: CallbackProps) => void) => {
-    if (!ref.current) {
+  const handleMouseEvent = (event: MouseEvent, handler?: MouseEventHandler) => {
+    if (!ref.current || !handler) {
       return;
     }
+
     handler({
       event,
       coordinates: getEventCoordinates(event),
@@ -40,11 +47,13 @@ const Canvas = ({
   const handleMouseDown = (event: MouseEvent) => handleMouseEvent(event, onMouseDown);
   const handleMouseUp = (event: MouseEvent) => handleMouseEvent(event, onMouseUp);
   const handleMouseMove = (event: MouseEvent) => handleMouseEvent(event, onMouseMove);
+  const handleMouseEnter = (event: MouseEvent) => handleMouseEvent(event, onMouseEnter);
+  const handleMouseLeave = (event: MouseEvent) => handleMouseEvent(event, onMouseLeave);
   
   useEffect(() => {
-    console.log('fill');
     if (ref.current) {
       const context = ref.current.getContext('2d') as CanvasRenderingContext2D;
+      context.imageSmoothingEnabled = false;
       context.fillStyle = '#ffffff';
       context.fillRect(0, 0, width, height);
     }
@@ -60,6 +69,8 @@ const Canvas = ({
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     />
   );
 };

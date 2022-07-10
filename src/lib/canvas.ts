@@ -1,5 +1,8 @@
+import { rgb2css } from './colors';
 import type { Coordinates } from './types';
 import type { RGB } from './colors';
+// @ts-ignore
+import bresenham from 'bresenham';
 
 type DrawProps = {
   canvas: HTMLCanvasElement,
@@ -26,10 +29,26 @@ class CoordinatesHashSet {
   values = (): Coordinates[] => [...this._set.values()].map(json => JSON.parse(json));
 }
 
-const draw = ({ canvas, coordinates: { x, y }, rgb: { red, green, blue } }: DrawProps) => {
+const drawPoint = ({ canvas, coordinates: { x, y }, rgb: { red, green, blue } }: DrawProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
   context.fillStyle = `rgb(${red}, ${green}, ${blue})`;
   context.fillRect(x, y, 1, 1);
+};
+
+type LineProps = {
+  canvas: HTMLCanvasElement,
+  start: Coordinates,
+  end: Coordinates,
+  rgb: RGB
+};
+
+const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.fillStyle = rgb2css(rgb);
+  const line = bresenham(start.x, start.y, end.x, end.y);
+  for (const point of line) {
+    drawPoint({ canvas, coordinates: point, rgb });
+  }
 };
 
 /**
@@ -64,7 +83,7 @@ const fill = ({ canvas, coordinates: { x, y }, rgb }: DrawProps) => {
   }
   
   for (const { x, y } of visitedCoordinates.values()) {
-    draw({ canvas, coordinates: { x, y }, rgb }); 
+    drawPoint({ canvas, coordinates: { x, y }, rgb }); 
   }
 };
 
@@ -85,6 +104,7 @@ const rgbEquals = (first: RGB, second: RGB): boolean =>
   && first.blue === second.blue;
 
 export {
-  draw,
+  drawPoint,
+  drawLine,
   fill
 };
