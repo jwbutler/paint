@@ -17,22 +17,24 @@ const ZoomLevelSelector = ({ zoomLevel, setZoomLevel }: Props) => {
   };
 
   return (
-    <div className={styles.zoomLevelSelector}>
-      <label>
-        Zoom level:
-        <select onChange={handleSelect} onSelect={handleSelect}>
-          {zoomLevelValues.map(zoomLevel => (
-            <option
-              value={zoomLevel}
-              key={zoomLevel}
-              selected={zoomLevel === _zoomLevel}
-            >
-              {zoomLevel}
-            </option>
-          ))}
-        </select>
-      </label>
-    </div>
+    <label className={styles.zoomLevelSelector}>
+      Zoom level: <br />
+      <select
+        className={styles.select}
+        onChange={handleSelect}
+        onSelect={handleSelect}
+      >
+        {zoomLevelValues.map(zoomLevel => (
+          <option
+            value={zoomLevel}
+            key={zoomLevel}
+            selected={zoomLevel === _zoomLevel}
+          >
+            {zoomLevel}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 };
 
