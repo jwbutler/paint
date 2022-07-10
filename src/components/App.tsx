@@ -6,7 +6,7 @@ import { Dimensions, Tool } from '../lib/types';
 import styles from './App.module.css';
 import CanvasController from './CanvasController';
 import ColorPicker from './ColorPicker';
-import Menu from './Menu';
+import MenuController from './MenuController';
 import SelectedColors from './SelectedColors';
 import Toolbox from './Toolbox';
 
@@ -19,7 +19,11 @@ const App = () => {
   
   return (
     <div className={styles.app}>
-      <Menu />
+      <MenuController
+        clearCanvas={() => {}}
+        saveCanvas={() => {}}
+        loadCanvas={() => {}}
+      />
       <div className={styles.main}>
         <Toolbox
           tool={tool}
