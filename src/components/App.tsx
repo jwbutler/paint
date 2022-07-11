@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { clearCanvas, loadImage, saveImage } from '../lib/canvas';
-import { type RGB } from '../lib/colors';
+import { fillCanvas, loadImage, saveImage } from '../lib/canvas';
+import { Colors, type RGB } from '../lib/colors';
 import {
   initialTool,
   initialDimensions,
@@ -31,7 +31,7 @@ const App = () => {
   const handleClearCanvas = () => {
     // I'm sure there is a fancy React-y way to do this.  But React sux
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    clearCanvas(canvas);
+    fillCanvas(canvas, Colors.WHITE);
   };
   
   const handleSaveImage = () => {

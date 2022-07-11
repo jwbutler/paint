@@ -75,7 +75,7 @@ const drawBox = ({ canvas, start, end, rgb }: LineProps) => {
 const drawRect = ({ canvas, start, end, rgb }: LineProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
   context.fillStyle = rgb2css(rgb);
-  context.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
+  context.fillRect(start.x, start.y, end.x - start.x + 1, end.y - start.y + 1);
 };
 
 /**
@@ -130,7 +130,12 @@ const rgbEquals = (first: RGB, second: RGB): boolean =>
 
 const clearCanvas = (canvas: HTMLCanvasElement) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  context.fillStyle = rgb2css(Colors.WHITE);
+  context.clearRect(0, 0, canvas.width, canvas.height);
+};
+
+const fillCanvas = (canvas: HTMLCanvasElement, color: RGB) => {
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.fillStyle = rgb2css(color);
   context.fillRect(0, 0, canvas.width, canvas.height);
 };
 
@@ -168,6 +173,7 @@ const loadImage = async (canvas: HTMLCanvasElement) => {
 
 export {
   clearCanvas,
+  fillCanvas,
   drawBox,
   drawRect,
   drawPoint,

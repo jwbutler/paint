@@ -1,10 +1,11 @@
-import React from 'react';
 import { RGB } from '../lib/colors';
 import { getMouseButtons, MouseButton } from '../lib/events';
 import { type Dimensions } from '../lib/geometry';
 import { BoxTool, DrawTool, FillTool, LineTool, RectTool, Tool, type ToolType } from '../lib/tools';
-import { ZoomLevel } from '../lib/zoom';
-import Canvas, { CallbackProps as CanvasCallbackProps } from './Canvas';
+import { ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
+import Canvas from './Canvas';
+import MouseEventSurface, { EventHandlerProps } from './MouseEventSurface';
+import styles from './CanvasController.module.css';
 
 const drawTool = new DrawTool();
 const lineTool = new LineTool();
@@ -41,44 +42,66 @@ const CanvasController = ({
   tool,
   zoomLevel
 }: Props) => {
-  const handleMouseDown = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
+  const handleMouseDown = ({ event, coordinates, mainCanvas, scratchCanvas }: EventHandlerProps) => {
     const buttons = getMouseButtons(event);
     setButtons(buttons);
 
-    getTool(tool).handleMouseDown({ coordinates, canvas, buttons, foregroundColor, backgroundColor });
+    getTool(tool).handleMouseDown({ coordinates, mainCanvas, scratchCanvas, buttons, foregroundColor, backgroundColor });
   };
 
-  const handleMouseUp = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
-    getTool(tool).handleMouseUp({ coordinates, canvas, buttons, foregroundColor, backgroundColor });
+  const handleMouseUp = ({ event, mainCanvas, scratchCanvas, coordinates }: EventHandlerProps) => {
+    getTool(tool).handleMouseUp({ coordinates, mainCanvas, scratchCanvas, buttons, foregroundColor, backgroundColor });
     setButtons(getMouseButtons(event));
   };
 
-  const handleMouseMove = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
+  const handleMouseMove = ({ event, mainCanvas, scratchCanvas, coordinates }: EventHandlerProps) => {
     const buttons = getMouseButtons(event);
-    getTool(tool).handleMouseMove({ buttons, canvas, coordinates, foregroundColor, backgroundColor });
+    getTool(tool).handleMouseMove({ coordinates, mainCanvas, scratchCanvas, buttons, foregroundColor, backgroundColor });
   };
   
-  const handleMouseEnter = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
+  const handleMouseEnter = ({ event, mainCanvas, scratchCanvas, coordinates }: EventHandlerProps) => {
     const buttons = getMouseButtons(event);
-    getTool(tool).handleMouseEnter({ buttons, canvas, coordinates, foregroundColor, backgroundColor });
+    getTool(tool).handleMouseEnter({ coordinates, mainCanvas, scratchCanvas, buttons, foregroundColor, backgroundColor });
   };
   
-  const handleMouseLeave = ({ event, canvas, coordinates }: CanvasCallbackProps) => {
+  const handleMouseLeave = ({ event, mainCanvas, scratchCanvas, coordinates }: EventHandlerProps) => {
     const buttons = getMouseButtons(event);
-    getTool(tool).handleMouseLeave({ buttons, canvas, coordinates, foregroundColor, backgroundColor });
+    getTool(tool).handleMouseLeave({ coordinates, mainCanvas, scratchCanvas, buttons, foregroundColor, backgroundColor });
   };
+  
+  const multiplier = zoomLevelAsNumber(zoomLevel);
   
   return (
-    <Canvas
-      width={dimensions.width}
-      height={dimensions.height}
-      zoomLevel={zoomLevel}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    />
+    <div
+      className={styles.drawSurface}
+      style={{
+        width: `${dimensions.width * multiplier}px`,
+        height: `${dimensions.height * multiplier}px`
+      }}
+    >
+      <Canvas
+        id="main-canvas"
+        width={dimensions.width}
+        height={dimensions.height}
+        zoomLevel={zoomLevel}
+      />
+      <Canvas
+        id="scratch-canvas"
+        width={dimensions.width}
+        height={dimensions.height}
+        zoomLevel={zoomLevel}
+      />
+      <MouseEventSurface
+        width={dimensions.width}
+        height={dimensions.height}
+        zoomLevel={zoomLevel}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      />
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import { type SyntheticEvent } from 'react';
-import { ZoomLevel, zoomLevelAsNumber, zoomLevelValues } from '../lib/zoom';
+import { ZoomLevel, zoomLevelValues } from '../lib/zoom';
 import styles from './ZoomLevelSelector.module.css';
 
 type Props = {
@@ -8,10 +8,7 @@ type Props = {
 };
 
 const ZoomLevelSelector = ({ zoomLevel, setZoomLevel }: Props) => {
-  const _zoomLevel = zoomLevel;
-
   const handleSelect = (e: SyntheticEvent) => {
-    console.log(e);
     const select = e.target as HTMLSelectElement;
     setZoomLevel(select.value as ZoomLevel);
   };
@@ -23,12 +20,12 @@ const ZoomLevelSelector = ({ zoomLevel, setZoomLevel }: Props) => {
         className={styles.select}
         onChange={handleSelect}
         onSelect={handleSelect}
+        value={zoomLevel}
       >
         {zoomLevelValues.map(zoomLevel => (
           <option
             value={zoomLevel}
             key={zoomLevel}
-            selected={zoomLevel === _zoomLevel}
           >
             {zoomLevel}
           </option>

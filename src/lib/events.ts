@@ -5,10 +5,10 @@ import { type ZoomLevel, zoomLevelAsNumber } from './zoom';
 type MouseButton = 'left' | 'middle' | 'right';
 
 const getEventCoordinates = (e: MouseEvent, zoomLevel: ZoomLevel): Coordinates => {
-  const canvas = e.target as HTMLElement;
+  const container = e.target as HTMLElement;
   const multiplier = 1 / zoomLevelAsNumber(zoomLevel);
-  const x = Math.floor((e.clientX - canvas.offsetLeft) * multiplier); // TODO scrollLeft?
-  const y = Math.floor((e.clientY - canvas.offsetTop) * multiplier); // TODO scrollTop?
+  const x = Math.floor((e.clientX - container.getBoundingClientRect().left) * multiplier); // TODO scrollLeft?
+  const y = Math.floor((e.clientY - container.getBoundingClientRect().top) * multiplier); // TODO scrollTop?
   return { x, y };
 };
 

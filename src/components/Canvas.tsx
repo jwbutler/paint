@@ -1,111 +1,42 @@
-import { createRef, type MouseEvent, useEffect, useState } from 'react';
-import { clearCanvas } from '../lib/canvas';
-import { getEventCoordinates } from '../lib/events';
-import { type Coordinates } from '../lib/geometry';
-import { ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
+import { useEffect } from 'react';
+import { fillCanvas } from '../lib/canvas';
+import { Colors } from '../lib/colors';
+import { type ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
 import styles from './Canvas.module.css';
 
-type CallbackProps = {
-  event: MouseEvent,
-  coordinates: Coordinates,
-  canvas: HTMLCanvasElement
-};
-
-type MouseEventHandler = ({ event, coordinates, canvas }: CallbackProps) => void; 
-
 type Props = {
+  id: string, // fuck it
   width: number,
   height: number,
-  zoomLevel: ZoomLevel,
-  onMouseDown?: MouseEventHandler,
-  onMouseUp?: MouseEventHandler,
-  onMouseMove?: MouseEventHandler,
-  onMouseEnter?: MouseEventHandler,
-  onMouseLeave?: MouseEventHandler
+  zoomLevel: ZoomLevel
 };
 
-const Canvas = ({
-  width,
-  height,
-  zoomLevel,
-  onMouseDown,
-  onMouseUp,
-  onMouseMove,
-  onMouseEnter,
-  onMouseLeave
-}: Props) => {
-  const [imageData, setImageData] = useState<ImageData | null>(null);
-  const ref = createRef<HTMLCanvasElement>();
-
-  const handleMouseEvent = (event: MouseEvent, handler?: MouseEventHandler) => {
-    const canvas = ref.current;
-    
-    if (!canvas || !handler) {
-      return;
-    }
-
-    handler({
-      event,
-      coordinates: getEventCoordinates(event, zoomLevel),
-      canvas
-    });
-  };
-  
-  const handleMouseDown = (event: MouseEvent) => handleMouseEvent(event, onMouseDown);
-  const handleMouseUp = (event: MouseEvent) => {
-    handleMouseEvent(event, onMouseUp);
-    const canvas = ref.current;
-    if (canvas) {
-      const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-      setImageData(context.getImageData(0, 0, canvas.width, canvas.height));
-    }
-  };
-  const handleMouseMove = (event: MouseEvent) => handleMouseEvent(event, onMouseMove);
-  const handleMouseEnter = (event: MouseEvent) => handleMouseEvent(event, onMouseEnter);
-  const handleMouseLeave = (event: MouseEvent) => handleMouseEvent(event, onMouseLeave);
-  
+const Canvas = ({ id, width, height, zoomLevel }: Props) => {
   useEffect(() => {
-    const canvas = ref.current;
+    const canvas = document.getElementById(id) as HTMLCanvasElement;
     if (canvas) {
       const context = canvas.getContext('2d') as CanvasRenderingContext2D;
       context.imageSmoothingEnabled = false;
       context.lineWidth = 1;
-      clearCanvas(canvas);
+      fillCanvas(canvas, Colors.WHITE);
     }
   // eslint-disable-next-line
   }, []);
-  
-  useEffect(() => {
-    const canvas = ref.current;
-    if (canvas && imageData) {
-      clearCanvas(canvas);
-      const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-      context.putImageData(imageData, 0, 0);
-    }
-  // eslint-disable-next-line
-  }, [width, height, ref.current]);
   
   const multiplier = zoomLevelAsNumber(zoomLevel);
 
   return (
     <canvas
-      id="canvas"
-      ref={ref}
+      id={id}
       className={styles.canvas}
       width={width}
       height={height}
       style={{
         width: `${width * multiplier}px`,
         height: `${height * multiplier}px`
-    }}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      }}
     />
   );
 };
 
 export default Canvas;
-export type { CallbackProps };

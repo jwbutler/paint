@@ -1,0 +1,8 @@
+.drawSurface {
+  position: relative;
+}
+.drawSurface > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+}

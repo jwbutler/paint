@@ -1,4 +1,4 @@
-import { drawBox, drawLine, drawPoint, drawRect, fill } from './canvas';
+import { clearCanvas, drawBox, drawLine, drawPoint, drawRect, fill } from './canvas';
 import { RGB } from './colors';
 import { MouseButton } from './events';
 import { Coordinates } from './geometry';
@@ -8,7 +8,8 @@ type ToolType = 'draw' | 'line' | 'fill' | 'box' | 'rect';
 type HandlerProps = {
   buttons: MouseButton[],
   coordinates: Coordinates,
-  canvas: HTMLCanvasElement,
+  mainCanvas: HTMLCanvasElement,
+  scratchCanvas: HTMLCanvasElement,
   foregroundColor: RGB,
   backgroundColor: RGB
 };
@@ -30,28 +31,28 @@ class DrawTool implements Tool {
   handleMouseDown = (props: HandlerProps): void => {};
   
   /** @override */
-  handleMouseUp = ({ buttons, coordinates, canvas, foregroundColor, backgroundColor }: HandlerProps) => {
+  handleMouseUp = ({ buttons, coordinates, mainCanvas, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (buttons.includes('left')) {
-      drawPoint({ canvas, coordinates, rgb: foregroundColor });
+      drawPoint({ canvas: mainCanvas, coordinates, rgb: foregroundColor });
     } else if (buttons.includes('right')) {
-      drawPoint({ canvas, coordinates, rgb: backgroundColor });
+      drawPoint({ canvas: mainCanvas, coordinates, rgb: backgroundColor });
     }
     this.lastCoordinates = null;
   };
   
   /** @override */
-  handleMouseMove = ({ buttons, coordinates, canvas, foregroundColor, backgroundColor }: HandlerProps) => {
+  handleMouseMove = ({ buttons, coordinates, mainCanvas, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (buttons.includes('left')) {
       if (this.lastCoordinates) {
-        drawLine({ canvas, start: this.lastCoordinates, end: coordinates, rgb: foregroundColor });
+        drawLine({ canvas: mainCanvas, start: this.lastCoordinates, end: coordinates, rgb: foregroundColor });
       } else {
-        drawPoint({ canvas, coordinates, rgb: foregroundColor });
+        drawPoint({ canvas: mainCanvas, coordinates, rgb: foregroundColor });
       }
     } else if (buttons.includes('right')) {
       if (this.lastCoordinates) {
-        drawLine({ canvas, start: this.lastCoordinates, end: coordinates, rgb: backgroundColor });
+        drawLine({ canvas: mainCanvas, start: this.lastCoordinates, end: coordinates, rgb: backgroundColor });
       } else {
-        drawPoint({ canvas, coordinates, rgb: backgroundColor });
+        drawPoint({ canvas: mainCanvas, coordinates, rgb: backgroundColor });
       }
     }
     this.lastCoordinates = coordinates;
@@ -77,19 +78,29 @@ class LineTool implements Tool {
   };
 
   /** @override */
-  handleMouseUp = ({ buttons, coordinates, canvas, foregroundColor, backgroundColor }: HandlerProps) => {
+  handleMouseUp = ({ buttons, coordinates, mainCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (this.startCoordinates !== null) {
       if (buttons.includes('left')) {
-        drawLine({ canvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
+        drawLine({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
       } else if (buttons.includes('right')) {
-        drawLine({ canvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
+        drawLine({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
       }
     }
     this.startCoordinates = null;
   };
   
   /** @override */
-  handleMouseMove = (props: HandlerProps) => {};
+  handleMouseMove = ({ buttons, coordinates, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
+    if (this.startCoordinates !== null) {
+      if (buttons.includes('left')) {
+        clearCanvas(scratchCanvas);
+        drawLine({ canvas: scratchCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
+      } else if (buttons.includes('right')) {
+        clearCanvas(scratchCanvas);
+        drawLine({ canvas: scratchCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
+      }
+    }
+  };
   
   /** @override */
   handleMouseEnter = (props: HandlerProps) => {};
@@ -107,19 +118,29 @@ class BoxTool implements Tool {
   };
 
   /** @override */
-  handleMouseUp = ({ buttons, coordinates, canvas, foregroundColor, backgroundColor }: HandlerProps) => {
+  handleMouseUp = ({ buttons, coordinates, mainCanvas, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (this.startCoordinates !== null) {
       if (buttons.includes('left')) {
-        drawBox({ canvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
+        drawBox({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
       } else if (buttons.includes('right')) {
-        drawBox({ canvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
+        drawBox({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
       }
     }
     this.startCoordinates = null;
   };
   
   /** @override */
-  handleMouseMove = (props: HandlerProps) => {};
+  handleMouseMove = ({ buttons, coordinates, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
+    if (this.startCoordinates !== null) {
+      if (buttons.includes('left')) {
+        clearCanvas(scratchCanvas);
+        drawBox({ canvas: scratchCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
+      } else if (buttons.includes('right')) {
+        clearCanvas(scratchCanvas);
+        drawBox({ canvas: scratchCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
+      }
+    }
+  };
   
   /** @override */
   handleMouseEnter = (props: HandlerProps) => {};
@@ -137,19 +158,29 @@ class RectTool implements Tool {
   };
 
   /** @override */
-  handleMouseUp = ({ buttons, coordinates, canvas, foregroundColor, backgroundColor }: HandlerProps) => {
+  handleMouseUp = ({ buttons, coordinates, mainCanvas, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (this.startCoordinates !== null) {
       if (buttons.includes('left')) {
-        drawRect({ canvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
+        drawRect({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
       } else if (buttons.includes('right')) {
-        drawRect({ canvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
+        drawRect({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
       }
     }
     this.startCoordinates = null;
   };
   
   /** @override */
-  handleMouseMove = (props: HandlerProps) => {};
+  handleMouseMove = ({ buttons, coordinates, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
+    if (this.startCoordinates !== null) {
+      if (buttons.includes('left')) {
+        clearCanvas(scratchCanvas);
+        drawRect({ canvas: scratchCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
+      } else if (buttons.includes('right')) {
+        clearCanvas(scratchCanvas);
+        drawRect({ canvas: scratchCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
+      }
+    }
+  };
   
   /** @override */
   handleMouseEnter = (props: HandlerProps) => {};
@@ -163,11 +194,11 @@ class FillTool implements Tool {
   handleMouseDown = (props: HandlerProps) => {};
 
   /** @override */
-  handleMouseUp = ({ buttons, coordinates, canvas, foregroundColor, backgroundColor }: HandlerProps) => {
+  handleMouseUp = ({ buttons, coordinates, mainCanvas, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (buttons.includes('left')) {
-      fill({ canvas, coordinates, rgb: foregroundColor });
+      fill({ canvas: mainCanvas, coordinates, rgb: foregroundColor });
     } else if (buttons.includes('right')) {
-      fill({ canvas, coordinates, rgb: backgroundColor });
+      fill({ canvas: mainCanvas, coordinates, rgb: backgroundColor });
     }
   };
   
