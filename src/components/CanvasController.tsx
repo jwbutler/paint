@@ -1,4 +1,4 @@
-import { RGB } from '../lib/colors';
+import { Colors, RGB } from '../lib/colors';
 import { getMouseButtons, MouseButton } from '../lib/events';
 import { type Dimensions } from '../lib/geometry';
 import { BoxTool, DrawTool, FillTool, LineTool, RectTool, Tool, type ToolType } from '../lib/tools';
@@ -84,6 +84,7 @@ const CanvasController = ({
         width={dimensions.width}
         height={dimensions.height}
         zoomLevel={zoomLevel}
+        backgroundColor={Colors.WHITE}
       />
       <Canvas
         id="scratch-canvas"

@@ -87,6 +87,7 @@ const MouseEventSurface = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onContextMenu={e => e.preventDefault()}
     />
   );
 };

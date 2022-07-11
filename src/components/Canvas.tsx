@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { fillCanvas } from '../lib/canvas';
-import { Colors } from '../lib/colors';
+import { type RGB } from '../lib/colors';
 import { type ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
 import styles from './Canvas.module.css';
 
@@ -8,17 +8,20 @@ type Props = {
   id: string, // fuck it
   width: number,
   height: number,
-  zoomLevel: ZoomLevel
+  zoomLevel: ZoomLevel,
+  backgroundColor?: RGB
 };
 
-const Canvas = ({ id, width, height, zoomLevel }: Props) => {
+const Canvas = ({ id, width, height, zoomLevel, backgroundColor }: Props) => {
   useEffect(() => {
     const canvas = document.getElementById(id) as HTMLCanvasElement;
     if (canvas) {
       const context = canvas.getContext('2d') as CanvasRenderingContext2D;
       context.imageSmoothingEnabled = false;
       context.lineWidth = 1;
-      fillCanvas(canvas, Colors.WHITE);
+      if (backgroundColor) {
+        fillCanvas(canvas, backgroundColor);
+      }
     }
   // eslint-disable-next-line
   }, []);
