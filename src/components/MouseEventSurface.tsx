@@ -1,6 +1,7 @@
 import { type MouseEvent, useEffect, useState } from 'react';
 import { fillCanvas } from '../lib/canvas';
 import { Colors } from '../lib/colors';
+import { mainCanvasId, scratchCanvasId } from '../lib/constants';
 import { getEventCoordinates } from '../lib/events';
 import { Coordinates } from '../lib/geometry';
 import { ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
@@ -40,8 +41,8 @@ const MouseEventSurface = ({
   
   const handleMouseEvent = (event: MouseEvent, handler: MouseEventHandler) => {
     const coordinates = getEventCoordinates(event, zoomLevel);
-    const mainCanvas = document.getElementById('main-canvas') as HTMLCanvasElement;
-    const scratchCanvas = document.getElementById('scratch-canvas') as HTMLCanvasElement;
+    const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
+    const scratchCanvas = document.getElementById(scratchCanvasId) as HTMLCanvasElement;
 
     handler({
       event,
@@ -55,7 +56,7 @@ const MouseEventSurface = ({
   const handleMouseUp = (event: MouseEvent) => {
     handleMouseEvent(event, onMouseUp);
     
-    const mainCanvas = document.getElementById('main-canvas') as HTMLCanvasElement;
+    const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
     const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
     setMainCanvasData(context.getImageData(0, 0, mainCanvas.width, mainCanvas.height));
   };
@@ -65,7 +66,7 @@ const MouseEventSurface = ({
   
   useEffect(() => {
     if (mainCanvasData) {
-      const mainCanvas = document.getElementById('main-canvas') as HTMLCanvasElement;
+      const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
       fillCanvas(mainCanvas, Colors.WHITE);
       const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
       context.putImageData(mainCanvasData, 0, 0);

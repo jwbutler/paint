@@ -6,7 +6,7 @@ import {
   initialDimensions,
   initialForegroundColor,
   initialBackgroundColor,
-  initialZoomLevel
+  initialZoomLevel, mainCanvasId
 } from '../lib/constants';
 import { type MouseButton } from '../lib/events';
 import { type Dimensions} from '../lib/geometry';
@@ -30,19 +30,19 @@ const App = () => {
   
   const handleClearCanvas = () => {
     // I'm sure there is a fancy React-y way to do this.  But React sux
-    const canvas = document.getElementById('main-canvas') as HTMLCanvasElement;
+    const canvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
     fillCanvas(canvas, Colors.WHITE);
   };
   
   const handleSaveImage = () => {
     // I'm sure there is a fancy React-y way to do this.  But React sux
-    const canvas = document.getElementById('main-canvas') as HTMLCanvasElement;
+    const canvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
     saveImage(canvas);
   };
   
   const handleLoadImage = async () => {
     // I'm sure there is a fancy React-y way to do this.  But React sux
-    const canvas = document.getElementById('main-canvas') as HTMLCanvasElement;
+    const canvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
     await loadImage(canvas);
   };
   

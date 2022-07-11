@@ -9,10 +9,15 @@ const initialForegroundColor: RGB = Colors.BLACK;
 const initialBackgroundColor: RGB = Colors.WHITE;
 const initialZoomLevel: ZoomLevel = '400%';
 
+const mainCanvasId = 'main-canvas';
+const scratchCanvasId = 'scratch-canvas';
+
 export {
   initialBackgroundColor,
   initialDimensions,
   initialForegroundColor,
   initialTool,
-  initialZoomLevel
+  initialZoomLevel,
+  mainCanvasId,
+  scratchCanvasId
 };
