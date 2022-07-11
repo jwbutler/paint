@@ -5,7 +5,7 @@ import { BoxTool, DrawTool, FillTool, LineTool, RectTool, Tool, type ToolType } 
 import { ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
 import Canvas from './Canvas';
 import MouseEventSurface, { EventHandlerProps } from './MouseEventSurface';
-import styles from './CanvasController.module.css';
+import styles from './DrawSurface.module.css';
 
 const drawTool = new DrawTool();
 const lineTool = new LineTool();
@@ -33,7 +33,7 @@ type Props = {
   zoomLevel: ZoomLevel
 }
 
-const CanvasController = ({
+const DrawSurface = ({
   buttons,
   setButtons,
   dimensions,
@@ -106,4 +106,4 @@ const CanvasController = ({
   );
 };
 
-export default CanvasController;
+export default DrawSurface;

@@ -13,7 +13,7 @@ import { type Dimensions} from '../lib/geometry';
 import { type ToolType } from '../lib/tools';
 import { ZoomLevel } from '../lib/zoom';
 import styles from './App.module.css';
-import CanvasController from './CanvasController';
+import DrawSurface from './DrawSurface';
 import ColorPicker from './ColorPicker';
 import MenuController from './MenuController';
 import SelectedColors from './SelectedColors';
@@ -71,7 +71,7 @@ const App = () => {
             setZoomLevel={setZoomLevel}
           />
         </div>
-        <CanvasController
+        <DrawSurface
           buttons={buttons}
           setButtons={setButtons}
           dimensions={dimensions}
