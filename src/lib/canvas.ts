@@ -1,4 +1,4 @@
-import { Colors, rgb2css } from './colors';
+import { rgb2css } from './colors';
 import type { Coordinates } from './geometry';
 import type { RGB } from './colors';
 // TODO write a .d.ts for this
