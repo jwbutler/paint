@@ -26,6 +26,7 @@ const Toolbox = ({ tool, setTool }: Props) => {
       <ToolButton tool="line" />
       <ToolButton tool="box" />
       <ToolButton tool="rect" />
+      <ToolButton tool="ellipse" />
       <ToolButton tool="fill" />
     </div>
   );

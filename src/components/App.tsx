@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { fillCanvas, loadImage, saveImage } from '../lib/canvas';
 import { Colors, type RGB } from '../lib/colors';
 import {

@@ -2,7 +2,13 @@ import { Colors, RGB } from '../lib/colors';
 import { mainCanvasId, scratchCanvasId } from '../lib/constants';
 import { getMouseButtons, MouseButton } from '../lib/events';
 import { type Dimensions } from '../lib/geometry';
-import { BoxTool, DrawTool, FillTool, LineTool, RectTool, Tool, type ToolType } from '../lib/tools';
+import { type Tool, type ToolType } from '../lib/tools';
+import BoxTool from '../lib/tools/BoxTool';
+import DrawTool from '../lib/tools/DrawTool';
+import EllipseTool from '../lib/tools/EllipseTool';
+import FillTool from '../lib/tools/FillTool';
+import LineTool from '../lib/tools/LineTool';
+import RectTool from '../lib/tools/RectTool';
 import { ZoomLevel, zoomLevelAsNumber } from '../lib/zoom';
 import Canvas from './Canvas';
 import MouseEventSurface, { EventHandlerProps } from './MouseEventSurface';
@@ -12,15 +18,17 @@ const drawTool = new DrawTool();
 const lineTool = new LineTool();
 const boxTool = new BoxTool();
 const rectTool = new RectTool();
+const ellipseTool = new EllipseTool();
 const fillTool = new FillTool();
 
 const getTool = (tool: ToolType): Tool => {
   switch (tool) {
-    case 'draw': return drawTool;
-    case 'line': return lineTool;
-    case 'box':  return boxTool;
-    case 'rect': return rectTool;
-    case 'fill': return fillTool;
+    case 'draw':    return drawTool;
+    case 'line':    return lineTool;
+    case 'box':     return boxTool;
+    case 'rect':    return rectTool;
+    case 'ellipse': return ellipseTool;
+    case 'fill':    return fillTool;
   }
 };
 

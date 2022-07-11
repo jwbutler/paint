@@ -3,7 +3,7 @@ import type { Coordinates } from './geometry';
 import type { RGB } from './colors';
 // TODO write a .d.ts for this
 // @ts-ignore
-import bresenham from 'bresenham';
+import { line as rasterLine, ellipse as rasterEllipse } from 'bresenham-zingl';
 
 type DrawProps = {
   canvas: HTMLCanvasElement,
@@ -53,14 +53,13 @@ type LineProps = {
 const drawLine = ({ canvas, start, end, rgb }: LineProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
   context.fillStyle = rgb2css(rgb);
-  const line = bresenham(start.x, start.y, end.x, end.y);
-  for (const point of line) {
-    const coordinates = {
-      x: Math.floor(point.x),
-      y: Math.floor(point.y)
-    };
-    drawPoint({ canvas, coordinates, rgb });
-  }
+  rasterLine(
+    start.x,
+    start.y,
+    end.x,
+    end.y,
+    (x: number, y: number) => drawPoint({ canvas, coordinates: { x, y }, rgb })
+  );
 };
 
 const drawBox = ({ canvas, start, end, rgb }: LineProps) => {
@@ -76,6 +75,23 @@ const drawRect = ({ canvas, start, end, rgb }: LineProps) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
   context.fillStyle = rgb2css(rgb);
   context.fillRect(start.x, start.y, end.x - start.x + 1, end.y - start.y + 1);
+};
+
+const drawEllipse = ({ canvas, start, end, rgb }: LineProps) => {
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.strokeStyle = rgb2css(rgb);
+  const centerX = (start.x + end.x) / 2;
+  const centerY = (start.y + end.y) / 2;
+  const radiusX = Math.abs(end.x - start.x) / 2;
+  const radiusY = Math.abs(end.y - start.y) / 2;
+  
+  rasterEllipse(
+    centerX,
+    centerY,
+    radiusX,
+    radiusY,
+    (x: number, y: number) => drawPoint({ canvas, coordinates: { x, y }, rgb })
+  );
 };
 
 /**
@@ -173,12 +189,13 @@ const loadImage = async (canvas: HTMLCanvasElement) => {
 
 export {
   clearCanvas,
-  fillCanvas,
   drawBox,
+  drawEllipse,
+  drawLine,
   drawRect,
   drawPoint,
-  drawLine,
   fill,
+  fillCanvas,
   loadImage,
   saveImage
 };
