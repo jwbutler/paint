@@ -2,6 +2,7 @@ import { Colors, RGB } from '../lib/colors';
 import { mainCanvasId, scratchCanvasId } from '../lib/constants';
 import { getMouseButtons, MouseButton } from '../lib/events';
 import { type Dimensions } from '../lib/geometry';
+import { HistoryEvent } from '../lib/history';
 import { type Tool, type ToolType } from '../lib/tools';
 import BoxTool from '../lib/tools/BoxTool';
 import DrawTool from '../lib/tools/DrawTool';
@@ -39,8 +40,9 @@ type Props = {
   foregroundColor: RGB,
   backgroundColor: RGB,
   tool: ToolType,
-  zoomLevel: ZoomLevel
-}
+  zoomLevel: ZoomLevel,
+  addHistoryEvent: (event: HistoryEvent) => void
+};
 
 const DrawSurface = ({
   buttons,
@@ -49,12 +51,16 @@ const DrawSurface = ({
   foregroundColor,
   backgroundColor,
   tool,
-  zoomLevel
+  zoomLevel,
+  addHistoryEvent
 }: Props) => {
   const handleMouseDown = ({ event, coordinates, mainCanvas, scratchCanvas }: EventHandlerProps) => {
     const buttons = getMouseButtons(event);
     setButtons(buttons);
 
+    const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
+    const imageData = context.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+    addHistoryEvent({ imageData });
     getTool(tool).handleMouseDown({ coordinates, mainCanvas, scratchCanvas, buttons, foregroundColor, backgroundColor });
   };
 

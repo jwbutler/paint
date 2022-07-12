@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fillCanvas, loadImage, saveImage } from '../lib/canvas';
 import { Colors, type RGB } from '../lib/colors';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../lib/constants';
 import { type MouseButton } from '../lib/events';
 import { type Dimensions} from '../lib/geometry';
+import { HistoryEvent } from '../lib/history';
 import { type ToolType } from '../lib/tools';
 import { ZoomLevel } from '../lib/zoom';
 import styles from './App.module.css';
@@ -28,7 +29,22 @@ const App = () => {
   const [foregroundColor, setForegroundColor] = useState<RGB>(initialForegroundColor);
   const [backgroundColor, setBackgroundColor] = useState<RGB>(initialBackgroundColor);
   const [buttons, setButtons] = useState<MouseButton[]>([]);
+  const [undoHistory, setUndoHistory] = useState<HistoryEvent[]>([]);
   
+  const undo = () => {
+    const [lastEvent] = undoHistory.splice(undoHistory.length - 1);
+    if (lastEvent) {
+      setUndoHistory([...undoHistory]);
+      const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
+      const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
+      context.putImageData(lastEvent.imageData, 0, 0);
+    }
+  };
+  
+  const addHistoryEvent = (event: HistoryEvent) => {
+    setUndoHistory([...undoHistory, event]);
+  };
+
   const handleClearCanvas = () => {
     // I'm sure there is a fancy React-y way to do this.  But React sux
     const canvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
@@ -53,6 +69,7 @@ const App = () => {
         clearCanvas={handleClearCanvas}
         saveImage={handleSaveImage}
         loadImage={handleLoadImage}
+        undo={undo}
       />
       <div className={styles.main}>
         <div className={styles.left}>
@@ -77,6 +94,7 @@ const App = () => {
           backgroundColor={backgroundColor}
           tool={tool}
           zoomLevel={zoomLevel}
+          addHistoryEvent={addHistoryEvent}
         />
       </div>
       <div className={styles.bottom}>
