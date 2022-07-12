@@ -14,8 +14,10 @@ class RectTool implements Tool {
   handleMouseUp = ({ buttons, coordinates, mainCanvas, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (this.startCoordinates !== null) {
       if (buttons.includes('left')) {
+        clearCanvas(scratchCanvas);
         drawRect({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
       } else if (buttons.includes('right')) {
+        clearCanvas(scratchCanvas);
         drawRect({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
       }
     }

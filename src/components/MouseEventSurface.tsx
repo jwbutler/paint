@@ -1,6 +1,4 @@
-import { type MouseEvent, useEffect, useState } from 'react';
-import { fillCanvas } from '../lib/canvas';
-import { Colors } from '../lib/colors';
+import { type MouseEvent } from 'react';
 import { mainCanvasId, scratchCanvasId } from '../lib/constants';
 import { getEventCoordinates } from '../lib/events';
 import { Coordinates } from '../lib/geometry';
@@ -37,8 +35,6 @@ const MouseEventSurface = ({
   onMouseEnter,
   onMouseLeave
 }: Props) => {
-  const [mainCanvasData, setMainCanvasData] = useState<ImageData | null>(null);
-  
   const handleMouseEvent = (event: MouseEvent, handler: MouseEventHandler) => {
     const coordinates = getEventCoordinates(event, zoomLevel);
     const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
@@ -53,27 +49,11 @@ const MouseEventSurface = ({
   };
   
   const handleMouseDown = (event: MouseEvent) => handleMouseEvent(event, onMouseDown);
-  const handleMouseUp = (event: MouseEvent) => {
-    handleMouseEvent(event, onMouseUp);
-    
-    const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
-    const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
-    setMainCanvasData(context.getImageData(0, 0, mainCanvas.width, mainCanvas.height));
-  };
+  const handleMouseUp = (event: MouseEvent) => handleMouseEvent(event, onMouseUp);
   const handleMouseMove = (event: MouseEvent) => handleMouseEvent(event, onMouseMove);
   const handleMouseEnter = (event: MouseEvent) => handleMouseEvent(event, onMouseEnter);
   const handleMouseLeave = (event: MouseEvent) => handleMouseEvent(event, onMouseLeave);
-  
-  useEffect(() => {
-    if (mainCanvasData) {
-      const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
-      fillCanvas(mainCanvas, Colors.WHITE);
-      const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
-      context.putImageData(mainCanvasData, 0, 0);
-    }
-  // eslint-disable-next-line
-  }, [width, height]);
-  
+
   const multiplier = zoomLevelAsNumber(zoomLevel);
   
   return (

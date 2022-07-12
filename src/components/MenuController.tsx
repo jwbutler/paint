@@ -3,10 +3,11 @@ import Menu, { type MenuData } from './Menu';
 type Props = {
   clearCanvas: () => void,
   saveImage: () => void,
-  loadImage: () => Promise<void>
+  loadImage: () => Promise<void>,
+  undo: () => void
 };
 
-const MenuController = ({ clearCanvas, saveImage, loadImage }: Props) => {
+const MenuController = ({ clearCanvas, saveImage, loadImage, undo }: Props) => {
   const data: MenuData[] = [
     {
       title: 'File',
@@ -18,7 +19,9 @@ const MenuController = ({ clearCanvas, saveImage, loadImage }: Props) => {
     },
     {
       title: 'Edit',
-      items: []
+      items: [
+        { label: 'Undo', onSelect: undo }
+      ]
     }
   ];
   
