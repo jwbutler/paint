@@ -11,11 +11,13 @@ class LineTool implements Tool {
   };
 
   /** @override */
-  handleMouseUp = ({ buttons, coordinates, mainCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
+  handleMouseUp = ({ buttons, coordinates, mainCanvas, scratchCanvas, foregroundColor, backgroundColor }: HandlerProps) => {
     if (this.startCoordinates !== null) {
       if (buttons.includes('left')) {
+        clearCanvas(scratchCanvas);
         drawLine({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: foregroundColor });
       } else if (buttons.includes('right')) {
+        clearCanvas(scratchCanvas);
         drawLine({ canvas: mainCanvas, start: this.startCoordinates, end: coordinates, rgb: backgroundColor });
       }
     }
