@@ -1,8 +1,13 @@
-import type { RGB } from './colors';
-import type { MouseButton } from './events';
-import type { Coordinates } from './geometry';
+import { RGB } from './colors';
+import { MouseButton } from './events';
+import { Coordinates } from './geometry';
+import BoxTool from './tools/BoxTool';
+import DrawTool from './tools/DrawTool';
+import FillTool from './tools/FillTool';
+import LineTool from './tools/LineTool';
+import RectTool from './tools/RectTool';
 
-type ToolType = 'draw' | 'line' | 'box' | 'rect' | 'ellipse' | 'fill';
+type ToolType = 'box' | 'draw' | 'ellipse' | 'fill' | 'line' | 'rect';
 
 type HandlerProps = {
   buttons: MouseButton[],
@@ -13,19 +18,23 @@ type HandlerProps = {
   backgroundColor: RGB
 };
 
-type MouseEventHandler = (props: HandlerProps) => void;
+type Handler = (props: HandlerProps) => void;
 
 interface Tool {
-  handleMouseDown: MouseEventHandler;
-  handleMouseUp: MouseEventHandler;
-  handleMouseMove: MouseEventHandler;
-  handleMouseEnter: MouseEventHandler;
-  handleMouseLeave: MouseEventHandler;
+  handleMouseDown: Handler;
+  handleMouseUp: Handler;
+  handleMouseMove: Handler;
+  handleMouseEnter: Handler;
+  handleMouseLeave: Handler;
 }
 
 export {
-  type MouseEventHandler,
-  type HandlerProps,
   type ToolType,
-  type Tool
+  type Tool,
+  type HandlerProps,
+  BoxTool,
+  DrawTool,
+  FillTool,
+  LineTool,
+  RectTool
 };
