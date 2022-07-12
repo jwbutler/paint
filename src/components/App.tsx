@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fillCanvas, loadImage, saveImage } from '../lib/canvas';
 import { Colors, type RGB } from '../lib/colors';
 import {
@@ -31,7 +31,7 @@ const App = () => {
   const [buttons, setButtons] = useState<MouseButton[]>([]);
   const [undoHistory, setUndoHistory] = useState<HistoryEvent[]>([]);
   
-  const undo = () => {
+  const undo = useCallback(() => {
     const [lastEvent] = undoHistory.splice(undoHistory.length - 1);
     if (lastEvent) {
       setUndoHistory([...undoHistory]);
@@ -39,7 +39,7 @@ const App = () => {
       const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
       context.putImageData(lastEvent.imageData, 0, 0);
     }
-  };
+  }, [undoHistory]);
   
   const addHistoryEvent = (event: HistoryEvent) => {
     setUndoHistory([...undoHistory, event]);
@@ -62,6 +62,19 @@ const App = () => {
     const canvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
     await loadImage(canvas);
   };
+  
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      if (e.key === 'n' && (e.ctrlKey || e.metaKey)) {
+        handleClearCanvas();
+      }
+      if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
+        undo();
+      }
+    };
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [undo, handleClearCanvas]);
 
   return (
     <div className={styles.app}>
