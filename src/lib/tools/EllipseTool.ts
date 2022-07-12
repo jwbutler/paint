@@ -1,4 +1,4 @@
-import { clearCanvas, drawEllipse, drawRect } from '../canvas';
+import { clearCanvas, drawEllipse } from '../canvas';
 import { Coordinates } from '../geometry';
 import { HandlerProps, Tool } from '../tools';
 
