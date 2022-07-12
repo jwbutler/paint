@@ -65,16 +65,13 @@ const App = () => {
   
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
-      if (e.key === 'n' && (e.ctrlKey || e.metaKey)) {
-        handleClearCanvas();
-      }
       if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
         undo();
       }
     };
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
-  }, [undo, handleClearCanvas]);
+  }, [undo]);
 
   return (
     <div className={styles.app}>
