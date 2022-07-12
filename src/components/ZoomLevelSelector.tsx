@@ -14,8 +14,8 @@ const ZoomLevelSelector = ({ zoomLevel, setZoomLevel }: Props) => {
   };
 
   return (
-    <label className={styles.zoomLevelSelector}>
-      Zoom level: <br />
+    <div className={styles.zoomLevelSelector}>
+      <div>Zoom level:</div>
       <select
         className={styles.select}
         onChange={handleSelect}
@@ -31,7 +31,7 @@ const ZoomLevelSelector = ({ zoomLevel, setZoomLevel }: Props) => {
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 };
 

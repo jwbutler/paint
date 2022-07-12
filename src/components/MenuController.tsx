@@ -4,10 +4,9 @@ type Props = {
   clearCanvas: () => void,
   saveImage: () => void,
   loadImage: () => Promise<void>
-  resizeCanvas: () => void,
 };
 
-const MenuController = ({ clearCanvas, saveImage, loadImage, resizeCanvas }: Props) => {
+const MenuController = ({ clearCanvas, saveImage, loadImage }: Props) => {
   const data: MenuData[] = [
     {
       title: 'File',
@@ -19,9 +18,7 @@ const MenuController = ({ clearCanvas, saveImage, loadImage, resizeCanvas }: Pro
     },
     {
       title: 'Edit',
-      items: [
-        { label: 'Resize', onSelect: resizeCanvas }
-      ]
+      items: []
     }
   ];
   

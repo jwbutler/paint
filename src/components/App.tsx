@@ -13,6 +13,7 @@ import { type Dimensions} from '../lib/geometry';
 import { type ToolType } from '../lib/tools';
 import { ZoomLevel } from '../lib/zoom';
 import styles from './App.module.css';
+import DimensionsSelector from './DimensionsSelector';
 import DrawSurface from './DrawSurface';
 import ColorPicker from './ColorPicker';
 import MenuController from './MenuController';
@@ -45,26 +46,23 @@ const App = () => {
     const canvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
     await loadImage(canvas);
   };
-  
-  const handleResizeCanvas = () => {
-    const width = parseInt(prompt('Enter width in pixels') || dimensions.width.toString());
-    const height = parseInt(prompt('Enter height in pixels') || dimensions.height.toString());
-    setDimensions({ width, height });
-  };
-  
+
   return (
     <div className={styles.app}>
       <MenuController
         clearCanvas={handleClearCanvas}
         saveImage={handleSaveImage}
         loadImage={handleLoadImage}
-        resizeCanvas={handleResizeCanvas}
       />
       <div className={styles.main}>
         <div className={styles.left}>
           <Toolbox
             tool={tool}
             setTool={setTool}
+          />
+          <DimensionsSelector
+            dimensions={dimensions}
+            setDimensions={setDimensions}
           />
           <ZoomLevelSelector
             zoomLevel={zoomLevel}
