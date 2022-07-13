@@ -30,6 +30,7 @@ const App = () => {
   const [backgroundColor, setBackgroundColor] = useState<RGB>(initialBackgroundColor);
   const [buttons, setButtons] = useState<MouseButton[]>([]);
   const [undoHistory, setUndoHistory] = useState<HistoryEvent[]>([]);
+  const [mainCanvasData, storeMainCanvasData] = useState<ImageData | null>(null);
   
   const undo = useCallback(() => {
     const [lastEvent] = undoHistory.splice(undoHistory.length - 1);
@@ -72,6 +73,14 @@ const App = () => {
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
   }, [undo]);
+  
+  useEffect(() => {
+    if (mainCanvasData) {
+      const mainCanvas = document.getElementById(mainCanvasId) as HTMLCanvasElement;
+      const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
+      context.putImageData(mainCanvasData, 0, 0);
+    }
+  }, [dimensions]);
 
   return (
     <div className={styles.app}>
@@ -105,6 +114,7 @@ const App = () => {
           tool={tool}
           zoomLevel={zoomLevel}
           addHistoryEvent={addHistoryEvent}
+          storeMainCanvasData={storeMainCanvasData}
         />
       </div>
       <div className={styles.bottom}>

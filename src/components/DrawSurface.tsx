@@ -41,7 +41,8 @@ type Props = {
   backgroundColor: RGB,
   tool: ToolType,
   zoomLevel: ZoomLevel,
-  addHistoryEvent: (event: HistoryEvent) => void
+  addHistoryEvent: (event: HistoryEvent) => void,
+  storeMainCanvasData: (imageData: ImageData | null) => void
 };
 
 const DrawSurface = ({
@@ -52,7 +53,8 @@ const DrawSurface = ({
   backgroundColor,
   tool,
   zoomLevel,
-  addHistoryEvent
+  addHistoryEvent,
+  storeMainCanvasData
 }: Props) => {
   const handleMouseDown = ({ event, coordinates, mainCanvas, scratchCanvas }: EventHandlerProps) => {
     const buttons = getMouseButtons(event);
@@ -67,6 +69,9 @@ const DrawSurface = ({
   const handleMouseUp = ({ event, mainCanvas, scratchCanvas, coordinates }: EventHandlerProps) => {
     getTool(tool).handleMouseUp({ coordinates, mainCanvas, scratchCanvas, buttons, foregroundColor, backgroundColor });
     setButtons(getMouseButtons(event));
+    
+    const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
+    storeMainCanvasData(context.getImageData(0, 0, mainCanvas.width, mainCanvas.height));
   };
 
   const handleMouseMove = ({ event, mainCanvas, scratchCanvas, coordinates }: EventHandlerProps) => {
