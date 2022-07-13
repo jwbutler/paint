@@ -80,6 +80,7 @@ const App = () => {
       const context = mainCanvas.getContext('2d') as CanvasRenderingContext2D;
       context.putImageData(mainCanvasData, 0, 0);
     }
+  //eslint-disable-next-line
   }, [dimensions]);
 
   return (
